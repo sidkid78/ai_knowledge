@@ -1,69 +1,85 @@
-from typing import Dict, Any, List
-import math
-from .axes import AXES
+"""
+Core algorithm implementations for the nexus_ukg system.
+"""
+from typing import Dict, Any
 
-def ai_knowledge_discovery(query: Dict[str, Any], axis_values: Dict[str, Any], weights: Dict[str, float]) -> float:
+def ai_knowledge_discovery(query: Dict[str, Any], axis_values: Dict[str, Any], weights: Dict[str, float]) -> Dict[str, Any]:
     """
-    Discovers AI knowledge by evaluating multiple axes with their respective weights.
-    
-    Formula: A1(Q) = max(Σ wj · fj(Q)), for j=1..13 axes
+    AI Knowledge Discovery algorithm implementation.
     
     Args:
-        query: The query parameters for knowledge discovery
-        axis_values: Dictionary containing parameters for each axis function
-        weights: Dictionary mapping axis names to their importance weights
+        query: Query parameters for the algorithm
+        axis_values: Node's axis values to analyze
+        weights: Optional weights for each axis
         
     Returns:
-        float: The maximum weighted value across all axes
+        Dict containing discovery results
     """
-    results = []
-    for axis_name, f in AXES.items():
-        axis_params = axis_values.get(axis_name, {"values": [1.0]})
-        w = weights.get(axis_name, 1.0)
-        try:
-            value = f(**axis_params)
-        except Exception:
-            value = 0.0
-        results.append(w * value)
-    return max(results)
-
-def regulatory_compliance_evaluation(axis_values: Dict[str, Any], rjs: Dict[str, float]) -> float:
-    """
-    Evaluates regulatory compliance across multiple axes.
+    results = {
+        'confidence': 0.0,
+        'discoveries': [],
+        'axis_contributions': {}
+    }
     
-    Formula: A2(Q) = Σ rj ⋅ cj(Q), where cj is the compliance value from axis_values
+    # Process each axis
+    for axis_name, axis_data in axis_values.items():
+        weight = weights.get(axis_name, 1.0)  # Use provided weight or default to 1.0
+        values = axis_data.get('values', [])
+        
+        if values:
+            # Calculate contribution for this axis
+            avg_value = sum(values) / len(values)
+            contribution = avg_value * weight
+            results['axis_contributions'][axis_name] = contribution
+            results['confidence'] += contribution
+    
+    # Normalize confidence
+    if results['axis_contributions']:
+        results['confidence'] /= len(results['axis_contributions'])
+    
+    return results
+
+def risk_assessment(query: Dict[str, Any], axis_values: Dict[str, Any], weights: Dict[str, float]) -> Dict[str, Any]:
+    """
+    Risk Assessment algorithm implementation.
     
     Args:
-        axis_values: Dictionary containing compliance values for each axis
-        rjs: Dictionary mapping axis names to their regulatory importance
+        query: Query parameters for the algorithm
+        axis_values: Node's axis values to assess
+        weights: Optional weights for risk factors
         
     Returns:
-        float: The sum of weighted compliance values
+        Dict containing risk assessment results
     """
-    return sum(rjs[axis]*axis_values[axis]["compliance"] for axis in rjs if axis in axis_values)
-
-def risk_assessment(axis_risks: Dict[str, float]) -> float:
-    """
-    Assesses overall risk by combining individual axis risks.
+    results = {
+        'risk_level': 0.0,
+        'risk_factors': [],
+        'axis_risks': {}
+    }
     
-    Formula: A3(Q) = Π (1 + ρj(Q)), where ρj is the risk value for axis j
+    # Process unified system function axis
+    usf_data = axis_values.get('unified_system_function', {})
+    values = usf_data.get('values', [])
     
-    Args:
-        axis_risks: Dictionary mapping axis names to their risk values
+    if values:
+        # Calculate overall risk level
+        risk_level = 1.0 - (sum(values) / len(values))
+        results['risk_level'] = risk_level
         
-    Returns:
-        float: The product of all risk factors
-    """
-    prod = 1.0
-    for risk in axis_risks.values():
-        prod *= (1 + risk)
-    return prod
+        # Identify risk factors
+        if risk_level > 0.7:
+            results['risk_factors'].append('HIGH_RISK')
+        elif risk_level > 0.4:
+            results['risk_factors'].append('MEDIUM_RISK')
+        else:
+            results['risk_factors'].append('LOW_RISK')
+            
+        results['axis_risks']['unified_system_function'] = risk_level
+    
+    return results
 
-# ... Other algorithms using similar compositional approach
-
+# Register available algorithms
 ALGORITHMS = {
-    "ai_knowledge_discovery": ai_knowledge_discovery,
-    "regulatory_compliance_evaluation": regulatory_compliance_evaluation,
-    "risk_assessment": risk_assessment,
-    # ... etc
+    'ai_knowledge_discovery': ai_knowledge_discovery,
+    'risk_assessment': risk_assessment
 }

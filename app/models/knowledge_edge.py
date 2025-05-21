@@ -2,7 +2,7 @@ import uuid
 from sqlalchemy import Column, String, ForeignKey, Float
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
-from knowledge_node import Base
+from app.models.knowledge_node import Base
 from sqlalchemy.dialects.postgresql import JSON
 
 class KnowledgeEdge(Base):

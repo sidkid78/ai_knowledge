@@ -1,68 +1,201 @@
-from typing import Any, Dict, List
+"""
+Core mathematical axes system for the UKG.
+Each axis represents a fundamental dimension of knowledge analysis.
+"""
+from typing import Dict, Any, List, Optional, Protocol, runtime_checkable
+from dataclasses import dataclass
+from enum import Enum
 import math
 
-def pillar_function(weights:List[float], values:List[float]) -> float:
-    return sum([w*v for w, v in zip(weights, values)])
+@runtime_checkable
+class AxisFunction(Protocol):
+    """Protocol for axis computation functions"""
+    def __call__(self, values: List[float], weights: Optional[List[float]] = None, **kwargs) -> float:
+        ...
 
-def level_hierarchy(levels:List[float], time_deltas:List[float]) -> float:
-    # Approximate integral as sum over discrete intervals
-    return sum(level * dt for level, dt in zip(levels, time_deltas))
+@dataclass
+class AxisMetadata:
+    """Metadata for an axis"""
+    name: str
+    description: str
+    value_range: tuple[float, float]
+    required_params: List[str]
+    optional_params: List[str]
 
-def branch_navigator(branches:List[float], routes:List[float]) -> float:
-    prod = 1.0
-    for b, r in zip(branches, routes):
-        prod *= b * r
-    return prod
+class AxisCategory(Enum):
+    """Categories of axes"""
+    STRUCTURAL = "structural"
+    FUNCTIONAL = "functional"
+    TEMPORAL = "temporal"
+    SEMANTIC = "semantic"
 
-def node_mapping(nodes:List[float], values:List[float]) -> float:
-    return max([n*v for n, v in zip(nodes, values)])
+# Core axis computation functions
+def compute_weighted_average(values: List[float], weights: Optional[List[float]] = None) -> float:
+    """Compute weighted average of values"""
+    if not weights:
+        weights = [1.0] * len(values)
+    return sum(v * w for v, w in zip(values, weights)) / sum(weights)
 
-def honeycomb_crosswalk(crosswalks:List[float], weights:List[float]) -> float:
-    prod = 1.0
-    for c, w in zip(crosswalks, weights):
-        prod *= c * w
-    return prod
+def compute_temporal_decay(values: List[float], time_deltas: List[float], decay_rate: float = 0.1) -> float:
+    """Compute time-decayed value"""
+    return sum(v * math.exp(-decay_rate * t) for v, t in zip(values, time_deltas))
 
-def spiderweb_provisions(provisions:List[float], routes:List[float]) -> float:
-    return sum([s*r for s, r in zip(provisions, routes)])
-
-def octopus_sector_mappings(sector_deltas:List[float], time_deltas:List[float]) -> float:
-    # Approximate time-integral as sum
-    return sum([delta*dt for delta, dt in zip(sector_deltas, time_deltas)])
-
-def role_id_layer(attributes:List[float], routes:List[float]) -> float:
-    return min([a*r for a, r in zip(attributes, routes)])
-
-def sector_expert_function(sector_values:List[float], compliance:List[float]) -> float:
-    prod = 1.0
-    for s, c in zip(sector_values, compliance):
-        prod *= s * c
-    return prod
-
-def temporal_axis(time_deltas:List[float]) -> float:
-    return sum(time_deltas)
-
-def unified_system_function(sys_metrics:List[float], weights:List[float]) -> float:
-    return sum([u*w for u, w in zip(sys_metrics, weights)])
-
-def location_mapping(geopoints:List[float], scale_factors:List[float]) -> float:
-    return sum([g*s for g, s in zip(geopoints, scale_factors)])
-
-def time_evolution_function(epochs:List[int], deltas:List[float]) -> float:
-    return sum([e * dk for e, dk in zip(epochs, deltas)])
-
-AXES = {
-    "pillar_function": pillar_function,
-    "level_hierarchy": level_hierarchy,
-    "branch_navigator": branch_navigator,
-    "node_mapping": node_mapping,
-    "honeycomb_crosswalk": honeycomb_crosswalk,
-    "spiderweb_provisions": spiderweb_provisions,
-    "octopus_sector_mappings": octopus_sector_mappings,
-    "role_id_layer": role_id_layer,
-    "sector_expert_function": sector_expert_function,
-    "temporal_axis": temporal_axis,
-    "unified_system_function": unified_system_function,
-    "location_mapping": location_mapping,
-    "time_evolution_function": time_evolution_function,
+# The 13 Mathematical Axes
+AXES: Dict[str, tuple[AxisFunction, AxisMetadata]] = {
+    "pillar_function": (
+        compute_weighted_average,
+        AxisMetadata(
+            name="Pillar Function",
+            description="Measures alignment with pillar-level objectives",
+            value_range=(0.0, 1.0),
+            required_params=["values"],
+            optional_params=["weights"]
+        )
+    ),
+    "level_hierarchy": (
+        compute_weighted_average,
+        AxisMetadata(
+            name="Level Hierarchy",
+            description="Quantifies position and influence in knowledge hierarchy",
+            value_range=(0.0, 1.0),
+            required_params=["values"],
+            optional_params=["weights"]
+        )
+    ),
+    "unified_system_function": (
+        compute_weighted_average,
+        AxisMetadata(
+            name="Unified System Function",
+            description="Measures contribution to overall system objectives",
+            value_range=(0.0, 1.0),
+            required_params=["values"],
+            optional_params=["weights"]
+        )
+    ),
+    "temporal_relevance": (
+        compute_temporal_decay,
+        AxisMetadata(
+            name="Temporal Relevance",
+            description="Time-based relevance and decay of knowledge",
+            value_range=(0.0, 1.0),
+            required_params=["values", "time_deltas"],
+            optional_params=["decay_rate"]
+        )
+    ),
+    "semantic_density": (
+        compute_weighted_average,
+        AxisMetadata(
+            name="Semantic Density",
+            description="Density of meaningful connections and relationships",
+            value_range=(0.0, 1.0),
+            required_params=["values"],
+            optional_params=["weights"]
+        )
+    ),
+    "complexity_measure": (
+        compute_weighted_average,
+        AxisMetadata(
+            name="Complexity Measure",
+            description="Measures inherent complexity and sophistication",
+            value_range=(0.0, 5.0),
+            required_params=["values"],
+            optional_params=["weights"]
+        )
+    ),
+    "uncertainty_quantification": (
+        compute_weighted_average,
+        AxisMetadata(
+            name="Uncertainty Quantification",
+            description="Quantifies uncertainty and confidence levels",
+            value_range=(0.0, 1.0),
+            required_params=["values"],
+            optional_params=["weights"]
+        )
+    ),
+    "role_id_layer": (
+        compute_weighted_average,
+        AxisMetadata(
+            name="Role Identification Layer",
+            description="Identifies and quantifies functional roles",
+            value_range=(0.0, 1.0),
+            required_params=["values"],
+            optional_params=["weights"]
+        )
+    ),
+    "sector_expert_function": (
+        compute_weighted_average,
+        AxisMetadata(
+            name="Sector Expert Function",
+            description="Domain expertise and specialization measure",
+            value_range=(0.0, 1.0),
+            required_params=["values"],
+            optional_params=["weights"]
+        )
+    ),
+    "compliance_vector": (
+        compute_weighted_average,
+        AxisMetadata(
+            name="Compliance Vector",
+            description="Regulatory and compliance alignment",
+            value_range=(0.0, 1.0),
+            required_params=["values"],
+            optional_params=["weights"]
+        )
+    ),
+    "risk_tensor": (
+        compute_weighted_average,
+        AxisMetadata(
+            name="Risk Tensor",
+            description="Multi-dimensional risk assessment",
+            value_range=(0.0, 1.0),
+            required_params=["values"],
+            optional_params=["weights"]
+        )
+    ),
+    "innovation_potential": (
+        compute_weighted_average,
+        AxisMetadata(
+            name="Innovation Potential",
+            description="Potential for generating new insights",
+            value_range=(0.0, 1.0),
+            required_params=["values"],
+            optional_params=["weights"]
+        )
+    ),
+    "cross_domain_synergy": (
+        compute_weighted_average,
+        AxisMetadata(
+            name="Cross-Domain Synergy",
+            description="Measures synergistic effects across domains",
+            value_range=(0.0, 1.0),
+            required_params=["values"],
+            optional_params=["weights"]
+        )
+    ),
 }
+
+def get_axis_metadata(axis_name: str) -> AxisMetadata:
+    """Get metadata for an axis"""
+    return AXES[axis_name][1]
+
+def compute_axis_value(axis_name: str, **kwargs) -> float:
+    """Compute value for an axis"""
+    axis_func = AXES[axis_name][0]
+    return axis_func(**kwargs)
+
+def validate_axis_params(axis_name: str, params: Dict[str, Any]) -> bool:
+    """Validate parameters for an axis"""
+    metadata = get_axis_metadata(axis_name)
+    
+    # Check required params
+    for param in metadata.required_params:
+        if param not in params:
+            raise ValueError(f"Missing required parameter: {param}")
+            
+    # Check value ranges
+    if "values" in params:
+        for value in params["values"]:
+            if not metadata.value_range[0] <= value <= metadata.value_range[1]:
+                raise ValueError(f"Value {value} outside valid range {metadata.value_range}")
+                
+    return True
