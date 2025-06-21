@@ -11,6 +11,7 @@ setup(
         "passlib[bcrypt]",
         "python-multipart",
         "openai",
+        "google-genai",  # New unified Google GenAI SDK
         "pytest",
         "pytest-asyncio"
     ]

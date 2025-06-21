@@ -9,7 +9,7 @@ from app.models.algorithm import Algorithm
 from .session import engine
 from .seed_data import seed_database
 
-def init_db(seed: bool = True) -> None:
+def init_db(seed: bool = False) -> None:
     """
     Initialize the database with all tables
     

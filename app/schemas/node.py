@@ -11,7 +11,7 @@ class NodeBase(BaseModel):
     """Base node schema"""
     label: str = Field(..., min_length=1, max_length=200)
     description: Optional[str] = Field(None, max_length=2000)
-    pillar_level_id: str = Field(..., regex="^PL[0-9]{2}$")
+    pillar_level_id: str = Field(..., pattern="^PL[0-9]{2}$")
     axis_values: Dict[str, Dict[str, Any]] = Field(
         ...,
         description="Axis values for this node"
@@ -25,7 +25,7 @@ class NodeUpdate(BaseModel):
     """Schema for node updates"""
     label: Optional[str] = Field(None, min_length=1, max_length=200)
     description: Optional[str] = None
-    pillar_level_id: Optional[str] = Field(None, regex="^PL[0-9]{2}$")
+    pillar_level_id: Optional[str] = Field(None, pattern="^PL[0-9]{2}$")
     axis_values: Optional[Dict[str, Dict[str, Any]]] = None
 
 class NodeResponse(NodeBase):
@@ -36,6 +36,44 @@ class NodeResponse(NodeBase):
 
     class Config:
         orm_mode = True
+
+class NodeFilter(BaseModel):
+    """Schema for node filtering"""
+    pillar_level_id: Optional[str] = None
+    confidence_threshold: Optional[float] = Field(None, ge=0.0, le=1.0)
+    has_validation: Optional[bool] = None
+    created_after: Optional[datetime] = None
+    created_before: Optional[datetime] = None
+
+class NodeList(BaseModel):
+    """Schema for paginated node lists"""
+    items: List[NodeResponse]
+    total: int = Field(..., ge=0)
+    skip: int = Field(..., ge=0)
+    limit: int = Field(..., ge=1)
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "items": [
+                    {
+                        "id": "123e4567-e89b-12d3-a456-426614174000",
+                        "label": "Quantum Computing Fundamentals",
+                        "description": "Basic concepts of quantum computing",
+                        "pillar_level_id": "PL01",
+                        "axis_values": {
+                            "complexity": {"value": 0.8, "confidence": 0.9},
+                            "novelty": {"value": 0.7, "confidence": 0.8}
+                        },
+                        "created_at": "2024-01-01T12:00:00Z",
+                        "updated_at": "2024-01-01T12:00:00Z"
+                    }
+                ],
+                "total": 1,
+                "skip": 0,
+                "limit": 100
+            }
+        }
 
 class ProcessNodeRequest(BaseModel):
     """Schema for node processing requests"""

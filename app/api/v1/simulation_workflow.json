@@ -1,0 +1,79 @@
+{
+  "name": "UKG_USKD_Generic_Simulation_Workflow",
+  "description": "Canonical simulation process for answering any domain question using UKG/USKD, including 13-axis mapping, 10-layer simulation, 12-step reasoning, and quad persona arbitration.",
+  "axisMapping": {
+    "step": "Auto-map 13 axes using NLP context extraction and taxonomy lookups",
+    "axes": [
+      "1: Pillar",
+      "2: Sector",
+      "3: Honeycomb",
+      "4: Branch",
+      "5: Node",
+      "6: Octopus (Regulatory Crosswalk)",
+      "7: Spiderweb (Compliance Crosswalk)",
+      "8: Knowledge Role",
+      "9: Sector Role",
+      "10: Regulatory Role",
+      "11: Compliance Role",
+      "12: Location",
+      "13: Time"
+    ]
+  },
+  "simulationStack": [
+    "Layer1: Parsing & Setup",
+    "Layer2: Domain Mapping",
+    "Layer3: Knowledge Retrieval",
+    "Layer4: Persona Injection",
+    "Layer5: Multi-Agent Collaboration",
+    "Layer6: Deep Analysis",
+    "Layer7: Recursive Validation",
+    "Layer8: Consensus Scoring",
+    "Layer9: Self-Critique",
+    "Layer10: Finalization"
+  ],
+  "reasoningSteps": [
+    "Step1: Input Validation",
+    "Step2: Domain Anchor",
+    "Step3: Subgraph Retrieval",
+    "Step4: Persona Injection",
+    "Step5: Cross-Axis Traversal",
+    "Step6: Role-Specific Drafts",
+    "Step7: Comparison & Contrast",
+    "Step8: Redundancy Check",
+    "Step9: Logic Structuring",
+    "Step10: Weak Spot Identification",
+    "Step11: Recommendation Synthesis",
+    "Step12: Confidence Scoring"
+  ],
+  "personas": [
+    {
+      "role": "Knowledge Expert",
+      "responsibility": "Subject-matter understanding and explainability"
+    },
+    {
+      "role": "Sector Expert",
+      "responsibility": "Industry/domain implementation alignment"
+    },
+    {
+      "role": "Regulatory Expert",
+      "responsibility": "Legal frameworks, compliance clauses"
+    },
+    {
+      "role": "Compliance Expert",
+      "responsibility": "Auditability, retention, enforcement readiness"
+    }
+  ],
+  "outputProtocol": {
+    "mustInclude": [
+      "13-Axis Mapping Table",
+      "10-Layer Simulation Trace",
+      "12-Step Reasoning Trace",
+      "Quad Persona Matrix",
+      "Final Combined Answer",
+      "Accuracy Score",
+      "Confidence Score",
+      "Re-run Trigger if Confidence < 99.5%"
+    ],
+    "format": "Structured markdown with trace tables and tabular persona consensus"
+  }
+}

@@ -6,6 +6,9 @@ from uuid import UUID
 from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from app.models.knowledge_node import KnowledgeNode
+from app.models.validation_result import ValidationResult
+
 
 from app.models.knowledge_node import KnowledgeNode
 from app.schemas.node import (

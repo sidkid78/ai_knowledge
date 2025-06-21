@@ -5,9 +5,9 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.api.v1 import nodes, edges, pillar_levels, algorithms, agents, auth
+from app.api.v1 import nodes, edges, pillar_levels, algorithms, agents, auth, axes, ai_insights
 from app.core.config import settings
-from app.db.session import init_db
+from app.db.init_db import init_db
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -32,6 +32,8 @@ app.include_router(edges.router, prefix=settings.API_V1_STR)
 app.include_router(pillar_levels.router, prefix=settings.API_V1_STR)
 app.include_router(algorithms.router, prefix=settings.API_V1_STR)
 app.include_router(agents.router, prefix=settings.API_V1_STR)
+app.include_router(axes.router, prefix=f"{settings.API_V1_STR}/axes", tags=["UKG Axes"])
+app.include_router(ai_insights.router, prefix=f"{settings.API_V1_STR}/ai", tags=["AI Insights"])
 
 # Global exception handler
 @app.exception_handler(Exception)
